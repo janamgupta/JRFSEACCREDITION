@@ -198,12 +198,15 @@ public class UserDao {
             if(rs != null) {
             	while(rs.next()) {
             		if(rs.getString("password").equals(oldPassword)) {
+            			if(oldPassword.equals(newPassword)) {
+            				return status = -2;
+            			}
             			ps = conn.prepareStatement("UPDATE user_info SET password = ? WHERE email = ?");
                         ps.setString(1, newPassword);
                         ps.setString(2, email);
-                        status = ps.executeUpdate();
+                        return status = ps.executeUpdate();
             		}else {
-            			status = -1;
+            			return status = -1;
             		}
             	}
             }

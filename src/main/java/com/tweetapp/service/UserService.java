@@ -1,11 +1,7 @@
 package com.tweetapp.service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,42 +13,8 @@ import com.tweetapp.dao.UserDao;
 
 public class UserService {
 	UserDao userDao = new UserDao();
-	public String registerUser() throws IOException, ParseException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		System.out.println("Register New User");
-		System.out.println("------------------------------------------------");
-        System.out.println("Enter Email:");
-        System.out.println("------------------------------------------------");
-        String email = br.readLine();
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Password:");
-        System.out.println("------------------------------------------------");
-        String password = br.readLine();
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter First Name:");
-        System.out.println("------------------------------------------------");
-        String firstName = br.readLine();
-        System.out.println("Enter Last Name:");
-        System.out.println("------------------------------------------------");
-        String lastName = br.readLine();
-        System.out.println("Enter Gender:");
-        System.out.println("------------------------------------------------");
-        String gender = br.readLine();
-        System.out.println("Enter DOB");
-        System.out.println("------------------------------------------------");
-        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        java.util.Date myDate = formatter.parse(br.readLine());
-        java.sql.Date sqlDate = new java.sql.Date(myDate.getTime());
-        UserInfo userInfo = new UserInfo(firstName, lastName, email, password, gender, false,sqlDate);
-        int status = userDao.registerUser(userInfo);
-        if(status ==1 )
-        {
-            return "User Registered successfully";
-        }
-        else
-        {
-            return "ERROR while  registering user";
-        }
+	public int registerUser(UserInfo userInfo) throws IOException, ParseException {
+		return userDao.registerUser(userInfo);
 	}
 	
 	public int loginUser(String email, String password) throws IOException, ParseException {
@@ -69,30 +31,13 @@ public class UserService {
         }
 	}
 	
-	public int changePassword() throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		System.out.println("Change Password");
-		System.out.println("------------------------------------------------");
-        System.out.println("Enter Email:");
-        System.out.println("------------------------------------------------");
-        String email = br.readLine();
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter New Password:");
-        System.out.println("------------------------------------------------");
-        String password = br.readLine();
-        System.out.println("------------------------------------------------");
+	public int changePassword(String email, String password){
         Login login = new Login(email, password);
         int status = userDao.changePassword(login);
         return status;
 	}
 	
-	public int addTweet(String email) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		System.out.println("Add Tweet");
-		System.out.println("------------------------------------------------");
-        System.out.println("Enter Tweet:");
-        System.out.println("------------------------------------------------");
-        String tweet = br.readLine();
+	public int addTweet(String email, String tweet) throws IOException {
         Tweet tweetInfo = new Tweet(tweet, email) ;
         int status = userDao.addTweet(tweetInfo);
         return status;
@@ -127,18 +72,10 @@ public class UserService {
 		return userList;
 	}
 	
-	public String resetPassword(String email, String oldPassword, String newPassword) {
+	public int resetPassword(String email, String oldPassword, String newPassword) {
 		int status = 0;
 		status = userDao.resetPassword(email, oldPassword, newPassword);
-		if(status == 0) {
-			return "Unable to reset password try again";
-		}else {
-			if(status == -1) {
-				return "your old password is wrong try again.";
-			}else {
-				return "password reset successfull";
-			}
-		}
+		return status;
 	}
 	
 	public int logOutUser(String email) {
